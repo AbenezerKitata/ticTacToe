@@ -1,5 +1,30 @@
 $prim-Color: #f4f4f4;
-.wrapper{
+*{
+    box-sizing: border-box;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100vw;
-    border: 10px solid green;
+    min-height: 100vh;
+    margin: 0;
+}
+.wrapper{
+    width:fit-content;
+    border: 2px solid green;
+    box-sizing: border-box;
+}
+.board_obj{
+    width: 30px;
+    height: 30px;
+    border: 1px solid red;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+.board_obj:hover{
+    background-color: bisque;
 }
