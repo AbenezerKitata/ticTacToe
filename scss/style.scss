@@ -1,30 +1,50 @@
-$prim-Color: #f4f4f4;
-*{
+:root{
     box-sizing: border-box;
 }
 body{
+    width: 100vw;
+    min-height: 50vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+.startBtn{
+    min-width: 100px;
+    min-height:50px;
+    border: 1px solid black;
+    background-color: royalblue;
+    color: white;
+    font-size: 20px;
+    padding: 15px 10px;
+}
+.startBtn:hover{
+    background-color: blue;
+    cursor: pointer;
+}
+.startBtn:active{
+    background-color: black;
+}
+.wrapper {
     width: 100vw;
-    min-height: 100vh;
-    margin: 0;
-}
-.wrapper{
-    width:fit-content;
-    border: 2px solid green;
-    box-sizing: border-box;
-}
-.board_obj{
-    width: 30px;
-    height: 30px;
-    border: 1px solid red;
-    box-sizing: border-box;
     display: flex;
     justify-content: center;
-    align-content: center;
-}
-.board_obj:hover{
-    background-color: bisque;
+
+  .squaresContainer {
+    
+    border: 1px solid black;
+    display: grid;
+    grid-template-columns: 50px 50px 50px;
+    grid-template-rows: 50px 50px 50px;
+    .square {
+      width: 50px;
+      height: 50px;
+      border: 1px solid rgb(31, 20, 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .square:hover{
+        background-color: bisque;
+    }
+  }
 }
