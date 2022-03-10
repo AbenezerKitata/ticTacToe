@@ -16,11 +16,9 @@ let Game = {
     const createSquares = ((num) => {
       for (let i = 0; i < num; i++) {
         let squares = document.createElement(`div`);
-        // squares.className = `gameSquare${i+1}`;
         squares.classList.add(`square`, `${i + 1}`);
-        let numb;
-
         gameSquaresArr.push(squares);
+
         // Add more classes like top and bottom
         let addClasses = (() => {
           gameSquaresArr.forEach((square) => {
@@ -61,23 +59,14 @@ let Game = {
       let counter = 0;
       gameSquaresArr.forEach((square) => {
         square.addEventListener(`click`, (e) => {
-          // console.log(e.currentTarget.classList);
           counter++;
-          if (
-            !e.currentTarget.classList.contains(`clicked`) &&
-            !e.currentTarget.classList.contains(`stop`) &&
-            counter === 1
-          ) {
+          if (!e.currentTarget.classList.contains(`clicked`) && !e.currentTarget.classList.contains(`stop`) && counter === 1) {
             e.currentTarget.textContent = `X`;
             e.target.style.backgroundColor = `rgba(31, 20, 0, 0.589)`;
             e.target.style.color = `white`;
             e.currentTarget.classList.add(`X`);
           }
-          if (
-            !e.currentTarget.classList.contains(`clicked`) &&
-            !e.currentTarget.classList.contains(`stop`) &&
-            counter === 2
-          ) {
+          if (!e.currentTarget.classList.contains(`clicked`) && !e.currentTarget.classList.contains(`stop`) && counter === 2) {
             e.currentTarget.textContent = `O`;
             e.target.style.backgroundColor = `rgba(31, 20, 0)`;
             e.target.style.color = `white`;
@@ -88,10 +77,16 @@ let Game = {
         });
       });
     })();
+
+
     // How our game operates
+
+    //Create 2 arrays
     const gameOperation = (() => {
       let xArray = [];
       let oArray = [];
+
+      //Push every ClassList to the arrays
       gameSquaresArr.forEach((square) => {
         square.addEventListener(`click`, (e) => {
           if (e.currentTarget.textContent === `X`) {
@@ -105,20 +100,20 @@ let Game = {
           arr1dx = [].concat.apply([], xArray);
           arr1do = [].concat.apply([], oArray);
 
-          // count repetition for x
+          // count repetition for a classList (x)
 
           const countsX = {};
           arr1dx.forEach(function (el) {
             countsX[el] = (countsX[el] || 0) + 1;
           });
-          console.log(countsX);
 
-          // count repetition for o
+          // count repetition for a classList (o)
           const countsO = {};
           arr1do.forEach(function (el) {
             countsO[el] = (countsO[el] || 0) + 1;
           });
-          console.log(countsO);
+
+
           // what is repeated 3 times?
           let repeated3Times = (counterobj) => {
             for (const el in counterobj) {
@@ -133,19 +128,26 @@ let Game = {
               }
             }
           };
-          if (repeated3Times(countsO) !== undefined) {
+          if (!e.currentTarget.classList.contains(`stop`) && repeated3Times(countsO) !== undefined) {
             console.log(`O won`);
-            square.classList.add(`stop`);
             console.log(square.classList);
+            stopTheGame()
           }
-          if (repeated3Times(countsX) !== undefined) {
+          if (!e.currentTarget.classList.contains(`stop`) && repeated3Times(countsX) !== undefined) {
             console.log(`X won`);
-            square.classList.add(`stop`);
             console.log(square.classList);
+            stopTheGame()
           }
         });
       });
     })();
+
+    // Stop The Game
+    const stopTheGame = ()=>{
+      gameSquaresArr.forEach(square =>{
+        square.classList.add(`stop`);
+      })
+    }
 
     // create our squares container
     const createSquaresContainer = (() => {
