@@ -7,6 +7,25 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    
+}
+.inputContainer{
+    width: 400px;
+    justify-content: center;
+    display: grid;
+    grid-template-rows: 40px 30px;
+    row-gap: 30px;
+    input{
+        text-align: center;
+        font-size: 30px;
+    }
+
+}
+.submitBtns{
+    min-width: 60px;
+    text-align: center;
+    justify-self: center;
+    
 }
 .startBtn{
     min-width: 100px;
@@ -25,14 +44,16 @@ body{
     background-color: black;
 }
 .wrapper {
-    width: 100vw;
-    display: flex;
+    display: grid;
+    gap: 50px;
     justify-content: center;
+    box-sizing: border-box;
 
   .squaresContainer {
     
     border: 1px solid black;
     display: grid;
+    width: fit-content;
     grid-template-columns: 50px 50px 50px;
     grid-template-rows: 50px 50px 50px;
     .square {
@@ -47,4 +68,19 @@ body{
         background-color: bisque;
     }
   }
+}
+.scoresContainer{
+    border: 1px solid black;
+    height: 70px;
+    width: 150px;
+    .playerDiv{
+        border: 1px solid black;
+        height: 33px;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        padding-left: 10px;
+
+    }
+    
 }

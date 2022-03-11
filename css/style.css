@@ -17,6 +17,30 @@ body {
           align-items: center;
 }
 
+.inputContainer {
+  width: 400px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: 40px 30px;
+      grid-template-rows: 40px 30px;
+  row-gap: 30px;
+}
+
+.inputContainer input {
+  text-align: center;
+  font-size: 30px;
+}
+
+.submitBtns {
+  min-width: 60px;
+  text-align: center;
+  -ms-grid-column-align: center;
+      justify-self: center;
+}
+
 .startBtn {
   min-width: 100px;
   min-height: 50px;
@@ -37,19 +61,23 @@ body {
 }
 
 .wrapper {
-  width: 100vw;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  display: -ms-grid;
+  display: grid;
+  gap: 50px;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
 .wrapper .squaresContainer {
   border: 1px solid black;
   display: -ms-grid;
   display: grid;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
   -ms-grid-columns: 50px 50px 50px;
       grid-template-columns: 50px 50px 50px;
   -ms-grid-rows: 50px 50px 50px;
@@ -73,4 +101,25 @@ body {
 
 .wrapper .squaresContainer .square:hover {
   background-color: bisque;
+}
+
+.scoresContainer {
+  border: 1px solid black;
+  height: 70px;
+  width: 150px;
+}
+
+.scoresContainer .playerDiv {
+  border: 1px solid black;
+  height: 33px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  padding-left: 10px;
 }

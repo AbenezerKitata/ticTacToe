@@ -1,16 +1,49 @@
 let Game = {
+
+  // Helper Functions
   appendToParent(parent, child) {
     return parent.appendChild(child);
   },
+  
 
   // create our overall game wrapper
   createWrapper() {
     let gameSquaresArr = [];
+    let player1Div;
+    let player2Div;
+    let p1WinCount = 0;
+    let p2WinCount = 0;
     let squaresContainer;
+    
     const body = document.body;
     const wrapper = document.createElement(`div`);
     wrapper.className = `wrapper`;
     this.appendToParent(body, wrapper);
+    const insertAfter = (el, referenceNode) => {
+      referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+    }
+
+    //create a reset button
+    const resetBtn = document.createElement(`button`);
+    const resetFn = ()=>{
+      gameSquaresArr.forEach(square => {
+        console.log(square.classList);
+        square.style.backgroundColor = `white`;
+        
+      });
+    }
+    resetBtn.addEventListener(`click`, resetFn)
+
+    // create a reset function
+    function reset(node){
+      gameSquaresArr.forEach(square => {
+        node.classList =square.classList
+      })
+
+       
+    }
+
+
 
     // create our squares
     const createSquares = ((num) => {
@@ -60,13 +93,21 @@ let Game = {
       gameSquaresArr.forEach((square) => {
         square.addEventListener(`click`, (e) => {
           counter++;
-          if (!e.currentTarget.classList.contains(`clicked`) && !e.currentTarget.classList.contains(`stop`) && counter === 1) {
+          if (
+            !e.currentTarget.classList.contains(`clicked`) &&
+            !e.currentTarget.classList.contains(`stop`) &&
+            counter === 1
+          ) {
             e.currentTarget.textContent = `X`;
             e.target.style.backgroundColor = `rgba(31, 20, 0, 0.589)`;
             e.target.style.color = `white`;
             e.currentTarget.classList.add(`X`);
           }
-          if (!e.currentTarget.classList.contains(`clicked`) && !e.currentTarget.classList.contains(`stop`) && counter === 2) {
+          if (
+            !e.currentTarget.classList.contains(`clicked`) &&
+            !e.currentTarget.classList.contains(`stop`) &&
+            counter === 2
+          ) {
             e.currentTarget.textContent = `O`;
             e.target.style.backgroundColor = `rgba(31, 20, 0)`;
             e.target.style.color = `white`;
@@ -77,7 +118,6 @@ let Game = {
         });
       });
     })();
-
 
     // How our game operates
 
@@ -113,7 +153,6 @@ let Game = {
             countsO[el] = (countsO[el] || 0) + 1;
           });
 
-
           // what is repeated 3 times?
           let repeated3Times = (counterobj) => {
             for (const el in counterobj) {
@@ -126,37 +165,74 @@ let Game = {
               ) {
                 return el;
               }
+              if (el === `clicked` && counterobj[el] === 8) {
+                stopTheGame();
+                console.log(draw);
+              }
             }
           };
-          if (!e.currentTarget.classList.contains(`stop`) && repeated3Times(countsO) !== undefined) {
+          if (
+            !e.currentTarget.classList.contains(`stop`) &&
+            repeated3Times(countsO) !== undefined
+          ) {
             console.log(`O won`);
-            console.log(square.classList);
-            stopTheGame()
+            p2WinCount++;
+            stopTheGame();
           }
-          if (!e.currentTarget.classList.contains(`stop`) && repeated3Times(countsX) !== undefined) {
+          if (
+            !e.currentTarget.classList.contains(`stop`) &&
+            repeated3Times(countsX) !== undefined
+          ) {
             console.log(`X won`);
-            console.log(square.classList);
-            stopTheGame()
+            p1WinCount++;
+            console.log(p1WinCount);
+            stopTheGame();
           }
         });
       });
     })();
 
     // Stop The Game
-    const stopTheGame = ()=>{
-      gameSquaresArr.forEach(square =>{
+    const stopTheGame = () => {
+      gameSquaresArr.forEach((square) => {
         square.classList.add(`stop`);
-      })
-    }
+      });
+    };
 
     // create our squares container
     const createSquaresContainer = (() => {
       squaresContainer = document.createElement(`div`);
       squaresContainer.className = `squaresContainer`;
       wrapper.appendChild(squaresContainer);
+
+      //// create our scores chart
+      drawScoresChart = (()=>{
+        let scoresContainer = document.createElement(`div`);
+        scoresContainer.className = `scoresContainer`;
+        player1Div = document.createElement(`div`);
+        player1Div.className = `playerDiv`;
+        player1Div.textContent = `${Game.player1.name} `
+        player2Div = document.createElement(`div`);
+        player2Div.className = `playerDiv`;
+        player2Div.textContent = `${Game.player2.name} `
+        // display scores
+        gameSquaresArr.forEach(square => {
+          square.addEventListener(`click`,()=>{
+            if (p1WinCount > 0 || p2WinCount > 0) {
+              player1Div.textContent = `${Game.player1.name}: ${p1WinCount}`
+              player2Div.textContent = `${Game.player2.name}: ${p2WinCount}`
+            }
+          })
+        });
+        
+        Game.appendToParent(scoresContainer, player1Div);
+        Game.appendToParent(scoresContainer, player2Div);
+        insertAfter(scoresContainer, squaresContainer);
+        insertAfter(resetBtn, scoresContainer)
+      })()
     })();
 
-    // insert our squares in their container ** only call me on `Click` **
+    // insert our squares in their container
     const insertSquaresToContainer = (() => {
       gameSquaresArr.forEach((square) => {
         squaresContainer.appendChild(square);
@@ -167,7 +243,7 @@ let Game = {
     // create the Start Button
     let startBtn;
     const createButton = (() => {
-      startBtn = document.createElement("Button");
+      startBtn = document.createElement("button");
       startBtn.className = `startBtn`;
       startBtn.textContent = `Start Game!`;
       this.appendToParent(document.body, startBtn);
@@ -177,10 +253,62 @@ let Game = {
     const startClicked = (() => {
       startBtn.addEventListener(`click`, (e) => {
         e.preventDefault();
-        this.createWrapper();
         startBtn.parentNode.removeChild(startBtn);
+        this.createInput.insertPlayer1();
       });
     })();
+  },
+  player1 : {},
+  player2 : {},
+
+  // Create inputs
+  createInput: {
+    insertPlayer1: () => {
+      let container = document.createElement(`div`);
+      container.className = `inputContainer`
+      let input = document.createElement(`input`);
+      input.setAttribute(`placeholder`, `Player 1`)
+      let btn = document.createElement(`button`);
+      btn.className = `submitBtns`;
+      btn.setAttribute(`type`, `submit`);
+      btn.textContent = `Submit`
+      Game.appendToParent(document.body, container);
+      Game.appendToParent(container, btn);  
+      container.insertBefore(input, btn); 
+      
+      btn.addEventListener(`click`, (e)=>{
+        e.preventDefault();
+        Game.player1.name = input.value;
+        container.parentNode.removeChild(container)
+        console.log(Game.player1);
+        Game.createInput.insertPlayer2()
+      })
+    },
+    insertPlayer2 () {
+      let container = document.createElement(`div`);
+      container.className = `inputContainer`
+      let input = document.createElement(`input`);
+      input.setAttribute(`placeholder`, `Player 2`)
+      let btn = document.createElement(`button`);
+      btn.className = `submitBtns`;
+      btn.setAttribute(`type`, `submit`);
+      btn.textContent = `Submit`
+      Game.appendToParent(document.body, container);
+      Game.appendToParent(container, btn);
+      container.insertBefore(input, btn);      
+      btn.addEventListener(`click`, (e)=>{
+        e.preventDefault();
+        if (input.value === Game.player1.name) {
+          alert(`Sorry!! Cant have the same name`)
+          return null;
+        }
+        else {Game.player2.name = input.value;}
+        container.parentNode.removeChild(container)
+        console.log(Game.player2);
+        Game.createWrapper();
+      })
+    },
+
   },
 };
 let test = Game.createStartButton();
