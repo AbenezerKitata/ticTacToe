@@ -100,12 +100,27 @@ body {
 }
 
 .wrapper .squaresContainer .square:hover {
-  background-color: bisque;
+  background-color: rgba(0, 0, 0, 0.596);
+}
+
+.X {
+  background-color: rgba(0, 0, 0, 0.472);
+  color: white;
+}
+
+.O {
+  background-color: black;
+  color: white;
+}
+
+.resetBtn {
+  width: 60px;
+  height: 20px;
+  font-size: 16px;
 }
 
 .scoresContainer {
   border: 1px solid black;
-  height: 70px;
   width: 150px;
 }
 

@@ -1,49 +1,64 @@
 let Game = {
-
   // Helper Functions
   appendToParent(parent, child) {
     return parent.appendChild(child);
   },
-  
 
   // create our overall game wrapper
   createWrapper() {
     let gameSquaresArr = [];
+    // store classes via classList
+    let xArray = [];
+    let oArray = [];
+
+    // score box divs
     let player1Div;
     let player2Div;
-    let p1WinCount = 0;
-    let p2WinCount = 0;
+
+    //game round counter
+    let roundCounter = Game.round.count;
+    roundCounter = 1;
+    let roundScore;
+
+    // players win counts
+    let p1WinCount = Game.player1.score;
+    p1WinCount = 0;
+    let p2WinCount = Game.player2.score;
+    p2WinCount = 0;
+    // X and O making counter
+    let counter = 0;
+
     let squaresContainer;
-    
+
     const body = document.body;
     const wrapper = document.createElement(`div`);
     wrapper.className = `wrapper`;
     this.appendToParent(body, wrapper);
     const insertAfter = (el, referenceNode) => {
       referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
-    }
+    };
 
     //create a reset button
     const resetBtn = document.createElement(`button`);
-    const resetFn = ()=>{
-      gameSquaresArr.forEach(square => {
-        console.log(square.classList);
-        square.style.backgroundColor = `white`;
-        
+    resetBtn.classList.add(`resetBtn`);
+    resetBtn.textContent = `Reset`;
+
+    const resetFn = () => {
+      if (p1WinCount > 0 || p2WinCount > 0) {
+        roundCounter++;
+        roundScore = ``;
+      }
+      gameSquaresArr.forEach((square) => {
+        square.textContent = ``;
+        square.classList.remove(`stop`, `clicked`, `X`, `O`);
+        xArray.splice(0, xArray.length);
+        oArray.splice(0, oArray.length);
+        counter = 0;
       });
-    }
-    resetBtn.addEventListener(`click`, resetFn)
+    };
+    resetBtn.addEventListener(`click`, resetFn);
 
     // create a reset function
-    function reset(node){
-      gameSquaresArr.forEach(square => {
-        node.classList =square.classList
-      })
-
-       
-    }
-
-
 
     // create our squares
     const createSquares = ((num) => {
@@ -89,18 +104,16 @@ let Game = {
 
     // add 'X' or 'O' to our Squares
     const addTextToSquares = (() => {
-      let counter = 0;
       gameSquaresArr.forEach((square) => {
         square.addEventListener(`click`, (e) => {
-          counter++;
+            counter++;
+          
           if (
             !e.currentTarget.classList.contains(`clicked`) &&
             !e.currentTarget.classList.contains(`stop`) &&
             counter === 1
           ) {
             e.currentTarget.textContent = `X`;
-            e.target.style.backgroundColor = `rgba(31, 20, 0, 0.589)`;
-            e.target.style.color = `white`;
             e.currentTarget.classList.add(`X`);
           }
           if (
@@ -109,84 +122,121 @@ let Game = {
             counter === 2
           ) {
             e.currentTarget.textContent = `O`;
-            e.target.style.backgroundColor = `rgba(31, 20, 0)`;
-            e.target.style.color = `white`;
             e.currentTarget.classList.add(`O`);
             counter -= 2;
           }
           square.classList.add(`clicked`);
         });
       });
+      return { counter };
     })();
 
     // How our game operates
 
     //Create 2 arrays
     const gameOperation = (() => {
-      let xArray = [];
-      let oArray = [];
-
       //Push every ClassList to the arrays
       gameSquaresArr.forEach((square) => {
         square.addEventListener(`click`, (e) => {
-          if (e.currentTarget.textContent === `X`) {
+          console.log(counter);
+          if (
+            !e.currentTarget.classList.contains(`stop`) &&
+            // !e.currentTarget.classList.contains(`clicked`) &&
+            e.currentTarget.textContent === `X` &&
+            counter > 0
+          ) {
+            console.log(`pushed`);
             xArray.push([...e.currentTarget.classList]);
+            // console.log([...e.currentTarget.classList]);
           }
-          if (e.currentTarget.textContent === `O`) {
+          if (
+            !e.currentTarget.classList.contains(`clicked`) &&
+            !e.currentTarget.classList.contains(`stop`) &&
+            e.currentTarget.textContent === `O` &&
+            counter > 0
+          ) {
             oArray.push([...e.currentTarget.classList]);
+            // console.log([...e.currentTarget.classList]);
           }
 
-          //convert arrays to 1d
-          arr1dx = [].concat.apply([], xArray);
-          arr1do = [].concat.apply([], oArray);
+          if (!e.currentTarget.classList.contains(`stop`)) {
+            //convert arrays to 1d
+            arr1dx = [].concat.apply([], xArray);
+            arr1do = [].concat.apply([], oArray);
 
-          // count repetition for a classList (x)
+            // count repetition for classLists in our array (x)
 
-          const countsX = {};
-          arr1dx.forEach(function (el) {
-            countsX[el] = (countsX[el] || 0) + 1;
-          });
+            let countsX = {};
+            arr1dx.forEach(function (el) {
+              countsX[el] = (countsX[el] || 0) + 1;
+            });
 
-          // count repetition for a classList (o)
-          const countsO = {};
-          arr1do.forEach(function (el) {
-            countsO[el] = (countsO[el] || 0) + 1;
-          });
+            // count repetition for  classLists in our array (o)
+            let countsO = {};
+            arr1do.forEach(function (el) {
+              countsO[el] = (countsO[el] || 0) + 1;
+            });
 
-          // what is repeated 3 times?
-          let repeated3Times = (counterobj) => {
-            for (const el in counterobj) {
-              if (
-                el !== `square` &&
-                el !== `X` &&
-                el !== `O` &&
-                el !== `clicked` &&
-                counterobj[el] === 3
-              ) {
-                return el;
+            // first count test
+            // console.log(`countsx--1:>`);
+            //   console.log(countsX);
+            //   console.log(`countso--1:>`);
+            //   console.log(countsO);
+            // let newObj = Object.assign({},countsX, countsO)
+            // console.log(`newObj:>`)
+            // console.log(newObj);
+
+            // what is repeated 3 times?
+            let repeated3Times = (counterobj) => {
+              // draw counter
+              let draw = 0;
+              for (const el in counterobj) {
+                if (
+                  el !== `square` &&
+                  el !== `X` &&
+                  el !== `O` &&
+                  el !== `clicked` &&
+                  counterobj[el] === 3
+                ) {
+                  return el;
+                }
+                if (
+                  el !== `square` &&
+                  el !== `X` &&
+                  el !== `O` &&
+                  el !== `clicked` &&
+                  counterobj[el] === 2
+                ) {
+                  draw++;
+                  // console.log(`cc: ${el}`);
+                  // console.log(draw);
+                }
+
+                if (draw === 6) {
+                  roundScore = `Draw`;
+                }
               }
-              if (el === `clicked` && counterobj[el] === 8) {
-                stopTheGame();
-                console.log(draw);
-              }
+            };
+            if (
+              !e.currentTarget.classList.contains(`stop`) &&
+              repeated3Times(countsO) !== undefined
+            ) {
+              p2WinCount++;
+              roundScore = `${Game.player2.name} won`;
+              stopTheGame();
+              // console.log(`countsO--2:>`);
+              // console.log(countsO);
             }
-          };
-          if (
-            !e.currentTarget.classList.contains(`stop`) &&
-            repeated3Times(countsO) !== undefined
-          ) {
-            console.log(`O won`);
-            p2WinCount++;
-            stopTheGame();
-          }
-          if (
-            !e.currentTarget.classList.contains(`stop`) &&
-            repeated3Times(countsX) !== undefined
-          ) {
-            console.log(`X won`);
-            p1WinCount++;
-            console.log(p1WinCount);
-            stopTheGame();
+            if (
+              !e.currentTarget.classList.contains(`stop`) &&
+              repeated3Times(countsX) !== undefined
+            ) {
+              roundScore = `${Game.player1.name} won`;
+              p1WinCount++;
+              stopTheGame();
+              // console.log(`countsx--2:>`);
+              // console.log(countsX);
+            }
           }
         });
       });
@@ -206,30 +256,37 @@ let Game = {
       wrapper.appendChild(squaresContainer);
 
       //// create our scores chart
-      drawScoresChart = (()=>{
+      drawScoresChart = (() => {
         let scoresContainer = document.createElement(`div`);
         scoresContainer.className = `scoresContainer`;
         player1Div = document.createElement(`div`);
         player1Div.className = `playerDiv`;
-        player1Div.textContent = `${Game.player1.name} `
+        player1Div.textContent = `${Game.player1.name} `;
+        //
+        roundDiv = document.createElement(`div`);
+        roundDiv.className = `playerDiv`;
+        roundDiv.textContent = `Round ${roundCounter}: `;
+        //
         player2Div = document.createElement(`div`);
         player2Div.className = `playerDiv`;
-        player2Div.textContent = `${Game.player2.name} `
+        player2Div.textContent = `${Game.player2.name} `;
         // display scores
-        gameSquaresArr.forEach(square => {
-          square.addEventListener(`click`,()=>{
+        gameSquaresArr.forEach((square) => {
+          square.addEventListener(`click`, () => {
             if (p1WinCount > 0 || p2WinCount > 0) {
-              player1Div.textContent = `${Game.player1.name}: ${p1WinCount}`
-              player2Div.textContent = `${Game.player2.name}: ${p2WinCount}`
+              player1Div.textContent = `${Game.player1.name}: ${p1WinCount}`;
+              player2Div.textContent = `${Game.player2.name}: ${p2WinCount}`;
+              roundDiv.textContent = `Round ${roundCounter}: ${roundScore}`;
             }
-          })
+          });
         });
-        
+
         Game.appendToParent(scoresContainer, player1Div);
         Game.appendToParent(scoresContainer, player2Div);
+        Game.appendToParent(scoresContainer, roundDiv);
         insertAfter(scoresContainer, squaresContainer);
-        insertAfter(resetBtn, scoresContainer)
-      })()
+        insertAfter(resetBtn, scoresContainer);
+      })();
     })();
 
     // insert our squares in their container
@@ -258,57 +315,58 @@ let Game = {
       });
     })();
   },
-  player1 : {},
-  player2 : {},
+  player1: {},
+  player2: {},
+  round: {},
 
   // Create inputs
   createInput: {
     insertPlayer1: () => {
       let container = document.createElement(`div`);
-      container.className = `inputContainer`
+      container.className = `inputContainer`;
       let input = document.createElement(`input`);
-      input.setAttribute(`placeholder`, `Player 1`)
+      input.setAttribute(`placeholder`, `Player 1`);
       let btn = document.createElement(`button`);
       btn.className = `submitBtns`;
       btn.setAttribute(`type`, `submit`);
-      btn.textContent = `Submit`
-      Game.appendToParent(document.body, container);
-      Game.appendToParent(container, btn);  
-      container.insertBefore(input, btn); 
-      
-      btn.addEventListener(`click`, (e)=>{
-        e.preventDefault();
-        Game.player1.name = input.value;
-        container.parentNode.removeChild(container)
-        console.log(Game.player1);
-        Game.createInput.insertPlayer2()
-      })
-    },
-    insertPlayer2 () {
-      let container = document.createElement(`div`);
-      container.className = `inputContainer`
-      let input = document.createElement(`input`);
-      input.setAttribute(`placeholder`, `Player 2`)
-      let btn = document.createElement(`button`);
-      btn.className = `submitBtns`;
-      btn.setAttribute(`type`, `submit`);
-      btn.textContent = `Submit`
+      btn.textContent = `Submit`;
       Game.appendToParent(document.body, container);
       Game.appendToParent(container, btn);
-      container.insertBefore(input, btn);      
-      btn.addEventListener(`click`, (e)=>{
+      container.insertBefore(input, btn);
+
+      btn.addEventListener(`click`, (e) => {
+        e.preventDefault();
+        Game.player1.name = input.value;
+        container.parentNode.removeChild(container);
+        // console.log(`Player 1: ${Game.player1.name}`);
+        Game.createInput.insertPlayer2();
+      });
+    },
+    insertPlayer2() {
+      let container = document.createElement(`div`);
+      container.className = `inputContainer`;
+      let input = document.createElement(`input`);
+      input.setAttribute(`placeholder`, `Player 2`);
+      let btn = document.createElement(`button`);
+      btn.className = `submitBtns`;
+      btn.setAttribute(`type`, `submit`);
+      btn.textContent = `Submit`;
+      Game.appendToParent(document.body, container);
+      Game.appendToParent(container, btn);
+      container.insertBefore(input, btn);
+      btn.addEventListener(`click`, (e) => {
         e.preventDefault();
         if (input.value === Game.player1.name) {
-          alert(`Sorry!! Cant have the same name`)
+          alert(`Sorry!! Cant have the same name`);
           return null;
+        } else {
+          Game.player2.name = input.value;
         }
-        else {Game.player2.name = input.value;}
-        container.parentNode.removeChild(container)
-        console.log(Game.player2);
+        container.parentNode.removeChild(container);
+        // console.log(`Player 2: ${Game.player2.name}`);
         Game.createWrapper();
-      })
+      });
     },
-
   },
 };
 let test = Game.createStartButton();
