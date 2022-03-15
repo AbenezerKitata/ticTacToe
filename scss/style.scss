@@ -5,6 +5,8 @@ $secondary-Color: #1E293B;
 $third-Color:#94A3B8;
 $button-font: 'Suez One', serif;
 $main-font: 'Dosis', sans-serif;
+$classic-red: #991B1B;
+$classic-blue: #1E40AF;
 :root {
   box-sizing: border-box;
 }
@@ -95,33 +97,24 @@ button {
   }
 }
 .X {
-  background-color: rgba(0, 0, 0, 0.472);
-  color: white;
+  background-color: $classic-red;
+  color: $third-Color;
 }
 .O {
-  background-color: black;
-  color: white;
+  background-color: $classic-blue;
+  color: $third-Color;
 }
-.scoresContainer {
-
-  min-width: 200px;
-  overflow: auto;
-  .playerDiv {
-    padding: 5px;
-    height: 50px;
-    border-left: 1px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    text-transform: capitalize;
-    font-size: 24px;
+.displayNames{
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: $main-font;
+  .p1Display{
+    color: $classic-red;
   }
-  .player1div{
-    color: red;
-
+  .p2Display{
+    color: $classic-blue;
   }
-  .player2div{
-    color: blue;
-  }
-
+  
 }
