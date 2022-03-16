@@ -37,12 +37,7 @@ const GameModule = (() => {
   const squaresArray = [];
   let counter = 0;
   let wrapper;
-
-  //players
-  const Players = {
-    player1: { name: createElement(`input`), score: 0 },
-    player2: { name: createElement(`input`), score: 0 },
-  };
+  let winMessage;
 
   const addStartBtn = () => {
     let startBtn = createElement("button");
@@ -50,47 +45,50 @@ const GameModule = (() => {
     appendToParent(document.body, startBtn);
     startBtn.addEventListener(`click`, (e) => {
       removeChild(startBtn);
-      addPlayerNames();
-    });
-  };
-  // add our input form
-  const addPlayerNames = () => {
-    // create their container
-    let container = createElement(`div`);
-    //create inputs
-    let player1 = Players.player1.name;
-    let player2 = Players.player2.name;
-    // create submit button
-    let btn = createElement(`button`);
-    // Add class and text content
-    addClassAndText(container, `inputContainer`, ``);
-    addClassAndText(btn, `submitBtns`, `Submit`);
-    // set attributes
-    player1.setAttribute(`placeholder`, `Player 1`);
-    player2.setAttribute(`placeholder`, `Player 2`);
-    btn.setAttribute(`type`, `submit`);
-
-    // append our elements
-    appendToParent(document.body, container);
-    appendToParent(container, player1);
-    insertAfter(player2, player1);
-    insertAfter(btn, player2);
-    // empty variables
-    btn.addEventListener(`click`, (e) => {
-      e.preventDefault();
-      removeChild(container);
-      log(player1.value);
-      // create wrapper
       createWrapper();
     });
   };
+  // add our input form
+  // const addPlayerNames = () => {
+  //   // create their container
+  //   let container = createElement(`div`);
+  //   //create inputs
+  //   let player1 = Players.player1.name;
+  //   let player2 = Players.player2.name;
+  //   // create submit button
+  //   let btn = createElement(`button`);
+  //   // Add class and text content
+  //   addClassAndText(container, `inputContainer`, ``);
+  //   addClassAndText(btn, `submitBtns`, `Submit`);
+  //   // set attributes
+  //   player1.setAttribute(`placeholder`, `Player 1`);
+  //   player2.setAttribute(`placeholder`, `Player 2`);
+  //   btn.setAttribute(`type`, `submit`);
+
+  //   // append our elements
+  //   appendToParent(document.body, container);
+  //   appendToParent(container, player1);
+  //   insertAfter(player2, player1);
+  //   insertAfter(btn, player2);
+  //   // empty variables
+  //   btn.addEventListener(`click`, (e) => {
+  //     e.preventDefault();
+  //     removeChild(container);
+  //     // create wrapper
+  //     // gameManager()
+  //   });
+  // };
   // create wrapper
   createWrapper = () => {
     wrapper = createElement(`div`);
     appendToParent(document.body, wrapper);
     wrapper.className = `wrapper`;
-    // Create Squares
 
+
+    winMessage = createElement(`p`);
+    addClassAndText(winMessage, `winMessage`, ``);
+    appendToParent(wrapper, winMessage);
+    // Create Squares
     const createSquares = ((num) => {
       for (let i = 0; i < num; i++) {
         const square = createElement("div");
@@ -98,6 +96,7 @@ const GameModule = (() => {
         squaresArray.push(square);
       }
     })(9);
+    
 
     //append squares
     const appendSquares = (() => {
@@ -109,24 +108,10 @@ const GameModule = (() => {
       appendToParent(wrapper, container);
     })();
 
-    // Create Names and scores displays
-    const namesDisplay = (() => {
-      const displayNames = createElement(`div`);
-      const P1display = createElement(`p`);
-      const P2display = createElement(`p`);
-      const p1 = Players.player1.name.value;
-      const p2 = Players.player2.name.value;
-      const p1Score = Players.player1.score;
-      const p2Score = Players.player2.score;
-      addClassAndText(displayNames, `displayNames`, ``);
-      appendToParent(wrapper, displayNames);
-      addClassAndText(P1display, `p1Display`, `${p1}: ${p1Score}`);
-      addClassAndText(P2display, `p2Display`, `${p2}: ${p2Score}`);
-      appendToParent(displayNames, P1display);
-      appendToParent(displayNames, P2display);
-    })();
 
-    gameManager();
+    // Create Names and scores displays
+
+    gameManager()
   };
 
   // Game Manager
@@ -143,6 +128,7 @@ const GameModule = (() => {
     };
     squaresArray.forEach((square) => {
       square.addEventListener(`click`, (e) => {
+        console.log(Players);
         e.preventDefault();
         // if operation
         const ifOperations = () => {
@@ -255,7 +241,7 @@ const GameModule = (() => {
             if (e.currentTarget.textContent === ``) {
               e.currentTarget.classList.add(`X`);
               e.currentTarget.textContent = `X`;
-              ifOperations();
+              ifOperations();              
               counter++;
             }
             break;
@@ -277,15 +263,14 @@ const GameModule = (() => {
               // console.log(scores);
               if (element.X == 3) {
                 square.classList.add(`stop`);
-                log(`X won`);
-                Players.player1.score++;
+                winMessage.textContent = `X won`;
+                //
+                console.log(Players);
                 counter -= 1000000;
               }
               if (element.O == 3) {
                 square.classList.add(`stop`);
-                log(`O won`);
-                Players.player2.score++;
-                log(Players.player2.score)
+                winMessage.textContent = `O won`;
                 counter -= 1000000;
               }
             })();
@@ -293,6 +278,7 @@ const GameModule = (() => {
         }
       });
     });
+
     // create reset buttons
     // Reset game
     const resetgame = createElement(`button`);
@@ -301,8 +287,10 @@ const GameModule = (() => {
     resetgame.addEventListener(`click`, (e) => {
       squaresArray.forEach((square) => {
         square.textContent = ``;
-        square.classList.remove(`X`,`O`)
+        square.classList.remove(`X`,`O`);
+        winMessage.textContent = ``
         counter = 0;
+        
       });
       for (const key in scores) {
         if (Object.hasOwnProperty.call(scores, key)) {
@@ -311,11 +299,11 @@ const GameModule = (() => {
           element.O = 0;
         }
       }
-    });
-    // Reset Scores
-    const resetScores = createElement(`button`);
-    addClassAndText(resetScores, `resetBtn`, `Reset Scores`);
-    insertAfter(resetScores, resetgame);
+    })
+  }
+  const Players = {
+    player1: { name: createElement(`input`)},
+    player2: { name: createElement(`input`)},
   };
 
   return { addStartBtn };
